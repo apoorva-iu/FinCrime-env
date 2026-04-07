@@ -1,3 +1,13 @@
+---
+title: FinCrime-env
+emoji: 🕵️
+colorFrom: blue
+colorTo: red
+sdk: docker
+pinned: false
+short_description: AI Financial Crime Investigation Environment for OpenEnv
+---
+
 # Pre-submission validation (recommended)
 
 Run the lightweight validator before submitting or deploying. It parses `openenv.yaml`, lints the `Dockerfile`, attempts a `/health` check, and — if available — runs `openenv validate`:
