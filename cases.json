@@ -1,0 +1,632 @@
+[
+  {
+    "case_id":"CASE001","difficulty":"easy","category":"fraud",
+    "expected_agent_score":1,
+    "description":"Obvious card fraud — multiple high-value wires to Unknown Vendor in Lagos",
+    "transactions":[
+      {"tx_id":"TX001","amount":50.00,"merchant":"Grocery Store","location":"New York","time":"2024-01-15 09:00"},
+      {"tx_id":"TX002","amount":9999.99,"merchant":"Unknown Vendor","location":"Lagos","time":"2024-01-15 09:05"},
+      {"tx_id":"TX003","amount":9999.99,"merchant":"Unknown Vendor","location":"Lagos","time":"2024-01-15 09:06"},
+      {"tx_id":"TX004","amount":30.00,"merchant":"Coffee Shop","location":"New York","time":"2024-01-15 10:00"},
+      {"tx_id":"TX005","amount":9999.99,"merchant":"Unknown Vendor","location":"Lagos","time":"2024-01-15 09:07"}
+    ],
+    "accounts":[{"account_id":"ACC1001","holder":"John Smith","account_type":"personal","balance":2500}],
+    "emails":[],"supporting_docs":[],"transfer_chain":[],
+    "ground_truth":{
+      "suspicious_tx_ids":["TX002","TX003","TX005"],
+      "shell_accounts":[],"source_account":"","beneficiary_account":"",
+      "crimes":["card_fraud"],"verdict":"freeze_and_escalate",
+      "key_evidence":["TX002","TX003","TX005"],"risk_level":"high"
+    }
+  },
+
+  {
+    "case_id":"CASE002","difficulty":"easy","category":"no_fraud",
+    "expected_agent_score":0,
+    "description":"Normal household account — groceries, rent, pharmacy, utilities. Zero suspicious activity.",
+    "transactions":[
+      {"tx_id":"TX010","amount":120.00,"merchant":"Supermarket","location":"Chicago","time":"2024-01-17 09:00"},
+      {"tx_id":"TX011","amount":45.00,"merchant":"Gas Station","location":"Chicago","time":"2024-01-17 10:00"},
+      {"tx_id":"TX012","amount":1200.00,"merchant":"Rent Payment","location":"Chicago","time":"2024-01-01 08:00"},
+      {"tx_id":"TX013","amount":80.00,"merchant":"Electricity Bill","location":"Chicago","time":"2024-01-05 09:00"},
+      {"tx_id":"TX014","amount":30.00,"merchant":"Pharmacy","location":"Chicago","time":"2024-01-17 16:00"}
+    ],
+    "accounts":[{"account_id":"ACC2001","holder":"Mike Davis","account_type":"personal","balance":5000}],
+    "emails":[],"supporting_docs":[],"transfer_chain":[],
+    "ground_truth":{
+      "suspicious_tx_ids":[],"shell_accounts":[],"source_account":"","beneficiary_account":"",
+      "crimes":[],"verdict":"clear_suspect","key_evidence":[],"risk_level":"low"
+    }
+  },
+
+  {
+    "case_id":"CASE003","difficulty":"medium","category":"no_fraud",
+    "expected_agent_score":0.01,
+    "description":"Student account — tuition, books, apartment rent. All verified with enrollment letter.",
+    "transactions":[
+      {"tx_id":"TX020","amount":4500.00,"merchant":"University Fee","location":"Boston","time":"2024-09-01 08:00"},
+      {"tx_id":"TX021","amount":800.00,"merchant":"Bookstore","location":"Boston","time":"2024-09-02 10:00"},
+      {"tx_id":"TX022","amount":700.00,"merchant":"Apartment Rent","location":"Boston","time":"2024-09-01 09:00"},
+      {"tx_id":"TX023","amount":150.00,"merchant":"Grocery Store","location":"Boston","time":"2024-09-05 11:00"}
+    ],
+    "accounts":[{"account_id":"ACC2002","holder":"Priya Sharma","account_type":"personal","balance":8000}],
+    "emails":[],
+    "supporting_docs":[
+      {"type":"university_enrollment","verified":true},
+      {"type":"scholarship_letter","verified":true}
+    ],
+    "transfer_chain":[],
+    "ground_truth":{
+      "suspicious_tx_ids":[],"shell_accounts":[],"source_account":"","beneficiary_account":"",
+      "crimes":[],"verdict":"clear_suspect","key_evidence":["supporting_docs_verified"],"risk_level":"low"
+    }
+  },
+
+  {
+    "case_id":"CASE004","difficulty":"easy","category":"gray",
+    "expected_agent_score":0.72,
+    "description":"Gray: Large domestic wire + jewelry. Claims inheritance but only 1 unverified doc. Needs more info.",
+    "transactions":[
+      {"tx_id":"TX030","amount":18000.00,"merchant":"Wire Transfer","location":"Domestic","time":"2024-03-01 10:00"},
+      {"tx_id":"TX031","amount":7000.00,"merchant":"Jewelry Store","location":"Domestic","time":"2024-03-02 14:00"},
+      {"tx_id":"TX032","amount":200.00,"merchant":"Restaurant","location":"Domestic","time":"2024-03-03 19:00"},
+      {"tx_id":"TX033","amount":500.00,"merchant":"Travel Agency","location":"Domestic","time":"2024-03-05 10:00"}
+    ],
+    "accounts":[{"account_id":"ACC3001","holder":"Carlos Mendez","account_type":"personal","balance":30000}],
+    "emails":[],
+    "supporting_docs":[{"type":"will_document","verified":false}],
+    "transfer_chain":[],
+    "ground_truth":{
+      "suspicious_tx_ids":["TX030","TX031"],
+      "shell_accounts":[],"source_account":"","beneficiary_account":"",
+      "crimes":["possible_money_laundering"],"verdict":"request_info",
+      "key_evidence":["TX030","TX031"],"risk_level":"medium"
+    }
+  },
+
+  {
+    "case_id":"CASE005","difficulty":"medium","category":"gray",
+    "expected_agent_score":0.82,
+    "description":"Gray: $8000 international wire + casino win. Plausible but unverified. Agent partially right.",
+    "transactions":[
+      {"tx_id":"TX040","amount":8000.00,"merchant":"International Wire","location":"International","time":"2024-04-01 10:00"},
+      {"tx_id":"TX041","amount":22000.00,"merchant":"Online Casino","location":"Unknown","time":"2024-04-02 22:00"},
+      {"tx_id":"TX042","amount":500.00,"merchant":"Supermarket","location":"Houston","time":"2024-04-02 09:00"},
+      {"tx_id":"TX043","amount":200.00,"merchant":"Gas Station","location":"Houston","time":"2024-04-05 08:00"}
+    ],
+    "accounts":[{"account_id":"ACC3002","holder":"Ahmed Hassan","account_type":"personal","balance":35000}],
+    "emails":[],"supporting_docs":[],"transfer_chain":[],
+    "ground_truth":{
+      "suspicious_tx_ids":["TX040","TX041"],
+      "shell_accounts":[],"source_account":"","beneficiary_account":"",
+      "crimes":["possible_money_laundering"],"verdict":"request_info",
+      "key_evidence":["TX040","TX041"],"risk_level":"medium"
+    }
+  },
+
+  {
+    "case_id":"CASE006","difficulty":"medium","category":"fraud",
+    "expected_agent_score":0.99,
+    "description":"Classic 4-hop layering — money through Dragon→Phoenix→Tiger→Eagle→Snake shell companies",
+    "transactions":[
+      {"tx_id":"TX2001","amount":490000,"from":"ACC2001","to":"ACC2002","note":"Consulting fee","time":"2024-03-01"},
+      {"tx_id":"TX2002","amount":470000,"from":"ACC2002","to":"ACC2003","note":"Service payment","time":"2024-03-02"},
+      {"tx_id":"TX2003","amount":450000,"from":"ACC2003","to":"ACC2004","note":"Investment","time":"2024-03-03"},
+      {"tx_id":"TX2004","amount":430000,"from":"ACC2004","to":"ACC2005","note":"Final transfer","time":"2024-03-04"}
+    ],
+    "accounts":[
+      {"account_id":"ACC2001","holder":"Dragon Trading LLC","account_type":"business","balance":500000},
+      {"account_id":"ACC2002","holder":"Phoenix Imports Ltd","account_type":"business","balance":480000},
+      {"account_id":"ACC2003","holder":"Tiger Holdings Inc","account_type":"business","balance":460000},
+      {"account_id":"ACC2004","holder":"Eagle Exports Co","account_type":"business","balance":440000},
+      {"account_id":"ACC2005","holder":"Snake Ventures","account_type":"business","balance":20000}
+    ],
+    "transfer_chain":[
+      {"from":"ACC2001","to":"ACC2002","amount":490000,"note":"Consulting fee"},
+      {"from":"ACC2002","to":"ACC2003","amount":470000,"note":"Service payment"},
+      {"from":"ACC2003","to":"ACC2004","amount":450000,"note":"Investment"},
+      {"from":"ACC2004","to":"ACC2005","amount":430000,"note":"Final transfer"}
+    ],
+    "emails":[],"supporting_docs":[],
+    "ground_truth":{
+      "suspicious_tx_ids":["TX2001","TX2002","TX2003","TX2004"],
+      "shell_accounts":["ACC2001","ACC2002","ACC2003","ACC2004"],
+      "source_account":"ACC2001","beneficiary_account":"ACC2005",
+      "crimes":["money_laundering"],"verdict":"freeze_and_escalate",
+      "key_evidence":["TX2001","TX2002","TX2003","TX2004"],"risk_level":"high"
+    }
+  },
+
+  {
+    "case_id":"CASE007","difficulty":"medium","category":"fraud",
+    "expected_agent_score":0.98,
+    "description":"Circular laundering — money loops back to source through Alpha→Beta→Gamma ring",
+    "transactions":[
+      {"tx_id":"TX3001","amount":95000,"from":"ACC3001","to":"ACC3002","note":"Payment","time":"2024-03-05"},
+      {"tx_id":"TX3002","amount":90000,"from":"ACC3002","to":"ACC3003","note":"Payment","time":"2024-03-06"},
+      {"tx_id":"TX3003","amount":85000,"from":"ACC3003","to":"ACC3001","note":"Payment","time":"2024-03-07"}
+    ],
+    "accounts":[
+      {"account_id":"ACC3001","holder":"Alpha Corp","account_type":"business","balance":100000},
+      {"account_id":"ACC3002","holder":"Beta LLC","account_type":"business","balance":95000},
+      {"account_id":"ACC3003","holder":"Gamma Inc","account_type":"business","balance":90000}
+    ],
+    "transfer_chain":[
+      {"from":"ACC3001","to":"ACC3002","amount":95000,"note":"Payment"},
+      {"from":"ACC3002","to":"ACC3003","amount":90000,"note":"Payment"},
+      {"from":"ACC3003","to":"ACC3001","amount":85000,"note":"Payment"}
+    ],
+    "emails":[],"supporting_docs":[],
+    "ground_truth":{
+      "suspicious_tx_ids":["TX3001","TX3002","TX3003"],
+      "shell_accounts":["ACC3001","ACC3002","ACC3003"],
+      "source_account":"ACC3001","beneficiary_account":"ACC3001",
+      "crimes":["money_laundering"],"verdict":"freeze_and_escalate",
+      "key_evidence":["TX3001","TX3002","TX3003"],"risk_level":"high"
+    }
+  },
+
+  {
+    "case_id":"CASE008","difficulty":"medium","category":"no_fraud",
+    "expected_agent_score":0.02,
+    "description":"Legit import-export — all 4 trade documents verified. Agent correctly clears.",
+    "transactions":[
+      {"tx_id":"TX6001","amount":50000,"from":"ACC6001","to":"ACC6002","note":"Business capital","time":"2024-07-01"},
+      {"tx_id":"TX6002","amount":45000,"from":"ACC6002","to":"SUPPLIER_UAE","note":"Goods purchase Invoice 4521","time":"2024-07-05"},
+      {"tx_id":"TX6003","amount":80000,"from":"CUSTOMER_UK","to":"ACC6002","note":"Payment PO 789","time":"2024-07-20"},
+      {"tx_id":"TX6004","amount":30000,"from":"ACC6002","to":"ACC6001","note":"Profit distribution","time":"2024-07-25"}
+    ],
+    "accounts":[
+      {"account_id":"ACC6001","holder":"Omar Farooq","account_type":"personal","balance":200000},
+      {"account_id":"ACC6002","holder":"Farooq Import Export","account_type":"business","balance":180000}
+    ],
+    "transfer_chain":[
+      {"from":"ACC6001","to":"ACC6002","amount":50000,"note":"Capital"},
+      {"from":"ACC6002","to":"ACC6001","amount":30000,"note":"Profit"}
+    ],
+    "emails":[],
+    "supporting_docs":[
+      {"type":"trade_license","verified":true},
+      {"type":"supplier_invoices","verified":true},
+      {"type":"customer_purchase_orders","verified":true},
+      {"type":"customs_declarations","verified":true}
+    ],
+    "ground_truth":{
+      "suspicious_tx_ids":[],"shell_accounts":[],
+      "source_account":"ACC6001","beneficiary_account":"ACC6001",
+      "crimes":[],"verdict":"clear_suspect",
+      "key_evidence":["supporting_docs_verified"],"risk_level":"low"
+    }
+  },
+
+  {
+    "case_id":"CASE009","difficulty":"medium","category":"no_fraud",
+    "expected_agent_score":0,
+    "description":"High-net-worth verified business sale — 5 docs confirmed. All legitimate wealth movement.",
+    "transactions":[
+      {"tx_id":"TX8001","amount":2000000,"from":"BUYER_CORP","to":"ACC8001","note":"Business acquisition payment","time":"2024-09-01"},
+      {"tx_id":"TX8002","amount":800000,"from":"ACC8001","to":"ACC8002","note":"Family trust allocation","time":"2024-09-05"},
+      {"tx_id":"TX8003","amount":500000,"from":"ACC8001","to":"REAL_ESTATE","note":"Property purchase verified","time":"2024-09-10"},
+      {"tx_id":"TX8004","amount":200000,"from":"ACC8001","to":"CHARITY_FOUND","note":"Charitable donation","time":"2024-09-15"}
+    ],
+    "accounts":[
+      {"account_id":"ACC8001","holder":"Eleanor Whitfield","account_type":"personal","balance":5000000},
+      {"account_id":"ACC8002","holder":"Whitfield Family Trust","account_type":"trust","balance":800000}
+    ],
+    "transfer_chain":[
+      {"from":"BUYER_CORP","to":"ACC8001","amount":2000000,"note":"Acquisition"},
+      {"from":"ACC8001","to":"ACC8002","amount":800000,"note":"Trust"}
+    ],
+    "emails":[],
+    "supporting_docs":[
+      {"type":"business_sale_agreement","verified":true},
+      {"type":"tax_return","verified":true},
+      {"type":"real_estate_contract","verified":true},
+      {"type":"charity_receipt","verified":true},
+      {"type":"broker_confirmation","verified":true}
+    ],
+    "ground_truth":{
+      "suspicious_tx_ids":[],"shell_accounts":[],
+      "source_account":"","beneficiary_account":"",
+      "crimes":[],"verdict":"clear_suspect",
+      "key_evidence":["supporting_docs_verified"],"risk_level":"low"
+    }
+  },
+
+  {
+    "case_id":"CASE010","difficulty":"medium","category":"no_fraud",
+    "expected_agent_score":0.76,
+    "description":"Retiree selling home — large property sale deposit fully documented and explained.",
+    "transactions":[
+      {"tx_id":"TX9001","amount":350000,"from":"BUYER_HOME","to":"ACC9001","note":"Home sale proceeds","time":"2024-06-01"},
+      {"tx_id":"TX9002","amount":200000,"from":"ACC9001","to":"NEW_PROPERTY","note":"New home purchase","time":"2024-06-05"},
+      {"tx_id":"TX9003","amount":100000,"from":"ACC9001","to":"RETIREMENT_FUND","note":"Pension top-up","time":"2024-06-10"},
+      {"tx_id":"TX9004","amount":30000,"from":"ACC9001","to":"CHILDREN","note":"Gift to children — documented","time":"2024-06-15"}
+    ],
+    "accounts":[{"account_id":"ACC9001","holder":"George Henderson","account_type":"personal","balance":420000}],
+    "emails":[],
+    "supporting_docs":[
+      {"type":"property_sale_agreement","verified":true},
+      {"type":"purchase_contract","verified":true},
+      {"type":"gift_declaration","verified":true}
+    ],
+    "transfer_chain":[],
+    "ground_truth":{
+      "suspicious_tx_ids":[],"shell_accounts":[],
+      "source_account":"","beneficiary_account":"",
+      "crimes":[],"verdict":"clear_suspect",
+      "key_evidence":["supporting_docs_verified"],"risk_level":"low"
+    }
+  },
+
+  {
+    "case_id":"CASE011","difficulty":"medium","category":"gray",
+    "expected_agent_score":0.8,
+    "description":"Gray: 5-company chain — 2 are clearly shells but 3 have partial docs. Agent identifies 4/5 correctly.",
+    "transactions":[
+      {"tx_id":"TX7001","amount":200000,"from":"ACC7001","to":"ACC7002","note":"Investment","time":"2024-05-01"},
+      {"tx_id":"TX7002","amount":180000,"from":"ACC7002","to":"ACC7003","note":"Consulting","time":"2024-05-02"},
+      {"tx_id":"TX7003","amount":160000,"from":"ACC7003","to":"ACC7004","note":"Subcontract","time":"2024-05-03"},
+      {"tx_id":"TX7004","amount":140000,"from":"ACC7004","to":"ACC7005","note":"Payment","time":"2024-05-04"}
+    ],
+    "accounts":[
+      {"account_id":"ACC7001","holder":"Omega Holdings","account_type":"business","balance":300000},
+      {"account_id":"ACC7002","holder":"Delta Services","account_type":"business","balance":200000},
+      {"account_id":"ACC7003","holder":"Beta Consulting","account_type":"business","balance":180000},
+      {"account_id":"ACC7004","holder":"Alpha Finance","account_type":"business","balance":160000},
+      {"account_id":"ACC7005","holder":"Sigma Trust","account_type":"trust","balance":5000}
+    ],
+    "transfer_chain":[
+      {"from":"ACC7001","to":"ACC7002","amount":200000},
+      {"from":"ACC7002","to":"ACC7003","amount":180000},
+      {"from":"ACC7003","to":"ACC7004","amount":160000},
+      {"from":"ACC7004","to":"ACC7005","amount":140000}
+    ],
+    "emails":[],
+    "supporting_docs":[
+      {"type":"business_registration","verified":true},
+      {"type":"audit_report","verified":false}
+    ],
+    "ground_truth":{
+      "suspicious_tx_ids":["TX7001","TX7002","TX7003","TX7004"],
+      "shell_accounts":["ACC7001","ACC7002","ACC7004"],
+      "source_account":"ACC7001","beneficiary_account":"ACC7005",
+      "crimes":["possible_money_laundering"],"verdict":"request_info",
+      "key_evidence":["TX7001","TX7002","TX7003","TX7004"],"risk_level":"medium"
+    }
+  },
+
+  {
+    "case_id":"CASE012","difficulty":"medium","category":"gray",
+    "expected_agent_score":0.63,
+    "description":"Gray: Simple 2-hop with 1 legit company mixed in. Agent identifies 2/3 shells — partial match.",
+    "transactions":[
+      {"tx_id":"TX5001","amount":295000,"from":"ACC5001","to":"ACC5002","note":"Service fee","time":"2024-04-10"},
+      {"tx_id":"TX5002","amount":270000,"from":"ACC5002","to":"ACC5003","note":"Legitimate vendor","time":"2024-04-11"},
+      {"tx_id":"TX5003","amount":240000,"from":"ACC5003","to":"ACC5004","note":"Final layering","time":"2024-04-12"}
+    ],
+    "accounts":[
+      {"account_id":"ACC5001","holder":"Dark Money Corp","account_type":"business","balance":300000},
+      {"account_id":"ACC5002","holder":"Middle Shell LLC","account_type":"business","balance":295000},
+      {"account_id":"ACC5003","holder":"Verified Vendor Ltd","account_type":"business","balance":280000},
+      {"account_id":"ACC5004","holder":"Clean Exit Ltd","account_type":"business","balance":10000}
+    ],
+    "transfer_chain":[
+      {"from":"ACC5001","to":"ACC5002","amount":295000,"note":"Service fee"},
+      {"from":"ACC5002","to":"ACC5003","amount":270000,"note":"Vendor"},
+      {"from":"ACC5003","to":"ACC5004","amount":240000,"note":"Final"}
+    ],
+    "emails":[],
+    "supporting_docs":[{"type":"vendor_registration","verified":true}],
+    "ground_truth":{
+      "suspicious_tx_ids":["TX5001","TX5002","TX5003"],
+      "shell_accounts":["ACC5001","ACC5002","ACC5004"],
+      "source_account":"ACC5001","beneficiary_account":"ACC5004",
+      "crimes":["money_laundering"],"verdict":"freeze_and_escalate",
+      "key_evidence":["TX5001","TX5002","TX5003"],"risk_level":"high"
+    }
+  },
+
+  {
+    "case_id":"CASE013","difficulty":"medium","category":"gray",
+    "expected_agent_score":0.73,
+    "description":"Gray: Real estate chain — 3 of 4 accounts are shells. Agent finds 3 correctly — partial match.",
+    "transactions":[
+      {"tx_id":"TX4001","amount":1950000,"from":"ACC4001","to":"ACC4002","note":"Investment capital","time":"2024-04-01"},
+      {"tx_id":"TX4002","amount":1900000,"from":"ACC4002","to":"ACC4003","note":"Property acquisition","time":"2024-04-02"},
+      {"tx_id":"TX4003","amount":1850000,"from":"ACC4003","to":"ACC4004","note":"Trust distribution","time":"2024-04-03"}
+    ],
+    "accounts":[
+      {"account_id":"ACC4001","holder":"Cash Holdings LLC","account_type":"business","balance":2000000},
+      {"account_id":"ACC4002","holder":"Property Invest Co","account_type":"business","balance":1950000},
+      {"account_id":"ACC4003","holder":"Luxury Realty Ltd","account_type":"business","balance":1900000},
+      {"account_id":"ACC4004","holder":"Final Trust","account_type":"trust","balance":50000}
+    ],
+    "transfer_chain":[
+      {"from":"ACC4001","to":"ACC4002","amount":1950000,"note":"Investment capital"},
+      {"from":"ACC4002","to":"ACC4003","amount":1900000,"note":"Property acquisition"},
+      {"from":"ACC4003","to":"ACC4004","amount":1850000,"note":"Trust distribution"}
+    ],
+    "emails":[],
+    "supporting_docs":[{"type":"property_deed","verified":false}],
+    "ground_truth":{
+      "suspicious_tx_ids":["TX4001","TX4002","TX4003"],
+      "shell_accounts":["ACC4001","ACC4002","ACC4003"],
+      "source_account":"ACC4001","beneficiary_account":"ACC4004",
+      "crimes":["money_laundering"],"verdict":"freeze_and_escalate",
+      "key_evidence":["TX4001","TX4002","TX4003"],"risk_level":"high"
+    }
+  },
+
+  {
+    "case_id":"CASE014","difficulty":"medium","category":"fraud",
+    "expected_agent_score":1,
+    "description":"Real estate laundering via 3 shells — Cash Holdings into Final Trust",
+    "transactions":[
+      {"tx_id":"TX4101","amount":1200000,"from":"ACCM1","to":"ACCM2","note":"Investment capital","time":"2024-08-01"},
+      {"tx_id":"TX4102","amount":1100000,"from":"ACCM2","to":"ACCM3","note":"Property acquisition","time":"2024-08-02"},
+      {"tx_id":"TX4103","amount":1000000,"from":"ACCM3","to":"ACCM4","note":"Trust allocation","time":"2024-08-03"}
+    ],
+    "accounts":[
+      {"account_id":"ACCM1","holder":"Omega Cash Corp","account_type":"business","balance":1500000},
+      {"account_id":"ACCM2","holder":"Sigma Property LLC","account_type":"business","balance":1200000},
+      {"account_id":"ACCM3","holder":"Delta Realty Inc","account_type":"business","balance":1100000},
+      {"account_id":"ACCM4","holder":"End Beneficiary Trust","account_type":"trust","balance":30000}
+    ],
+    "transfer_chain":[
+      {"from":"ACCM1","to":"ACCM2","amount":1200000,"note":"Investment capital"},
+      {"from":"ACCM2","to":"ACCM3","amount":1100000,"note":"Property"},
+      {"from":"ACCM3","to":"ACCM4","amount":1000000,"note":"Trust"}
+    ],
+    "emails":[],"supporting_docs":[],
+    "ground_truth":{
+      "suspicious_tx_ids":["TX4101","TX4102","TX4103"],
+      "shell_accounts":["ACCM1","ACCM2","ACCM3"],
+      "source_account":"ACCM1","beneficiary_account":"ACCM4",
+      "crimes":["money_laundering"],"verdict":"freeze_and_escalate",
+      "key_evidence":["TX4101","TX4102","TX4103"],"risk_level":"high"
+    }
+  },
+
+  {
+    "case_id":"CASE015","difficulty":"medium","category":"fraud",
+    "expected_agent_score":1,
+    "description":"Simple 2-hop shell — dirty money to middle shell to clean exit company",
+    "transactions":[
+      {"tx_id":"TX5101","amount":180000,"from":"ACCN1","to":"ACCN2","note":"Service fee","time":"2024-09-10"},
+      {"tx_id":"TX5102","amount":170000,"from":"ACCN2","to":"ACCN3","note":"Profit distribution","time":"2024-09-11"}
+    ],
+    "accounts":[
+      {"account_id":"ACCN1","holder":"Black Box Corp","account_type":"business","balance":200000},
+      {"account_id":"ACCN2","holder":"Grey Shell LLC","account_type":"business","balance":180000},
+      {"account_id":"ACCN3","holder":"White Exit Ltd","account_type":"business","balance":5000}
+    ],
+    "transfer_chain":[
+      {"from":"ACCN1","to":"ACCN2","amount":180000,"note":"Service fee"},
+      {"from":"ACCN2","to":"ACCN3","amount":170000,"note":"Distribution"}
+    ],
+    "emails":[],"supporting_docs":[],
+    "ground_truth":{
+      "suspicious_tx_ids":["TX5101","TX5102"],
+      "shell_accounts":["ACCN1","ACCN2"],
+      "source_account":"ACCN1","beneficiary_account":"ACCN3",
+      "crimes":["money_laundering"],"verdict":"freeze_and_escalate",
+      "key_evidence":["TX5101","TX5102"],"risk_level":"high"
+    }
+  },
+
+  {
+    "case_id":"CASE016","difficulty":"hard","category":"fraud",
+    "expected_agent_score":1,
+    "description":"Insider trading + money laundering + structuring by bank employee Robert Chen",
+    "suspect":{"name":"Robert Chen","account_id":"ACC8001","employee":true,"department":"Trading Desk"},
+    "transactions":[
+      {"tx_id":"TX101","amount":500000,"from":"ACC8001","to":"ACC8002","note":"Investment","time":"2024-02-01"},
+      {"tx_id":"TX102","amount":480000,"from":"ACC8002","to":"ACC8003","note":"Loan","time":"2024-02-02"},
+      {"tx_id":"TX103","amount":9000,"from":"ACC8003","to":"CASH","note":"Withdrawal","time":"2024-02-03"},
+      {"tx_id":"TX104","amount":9000,"from":"ACC8003","to":"CASH","note":"Withdrawal","time":"2024-02-03"},
+      {"tx_id":"TX105","amount":9000,"from":"ACC8003","to":"CASH","note":"Withdrawal","time":"2024-02-03"}
+    ],
+    "accounts":[
+      {"account_id":"ACC8001","holder":"Robert Chen","account_type":"personal","balance":2000000},
+      {"account_id":"ACC8002","holder":"RC Holdings Ltd","account_type":"business","balance":1800000},
+      {"account_id":"ACC8003","holder":"John Doe","account_type":"personal","balance":1500000}
+    ],
+    "emails":[
+      {"from":"robert.chen@bank.com","to":"rc_personal@gmail.com","subject":"Trade tip","body":"Buy XYZ stock before Friday announcement"},
+      {"from":"rc_personal@gmail.com","to":"johndoe_fake@email.com","subject":"Re: trade","body":"Transfer done, buy now"}
+    ],
+    "supporting_docs":[],
+    "transfer_chain":[
+      {"from":"ACC8001","to":"ACC8002","amount":500000},
+      {"from":"ACC8002","to":"ACC8003","amount":480000}
+    ],
+    "ground_truth":{
+      "suspicious_tx_ids":["TX101","TX102","TX103","TX104","TX105"],
+      "shell_accounts":["ACC8001","ACC8002","ACC8003"],
+      "source_account":"ACC8001","beneficiary_account":"ACC8003",
+      "crimes":["insider_trading","money_laundering","structuring"],
+      "verdict":"freeze_and_escalate",
+      "key_evidence":["TX101","TX102","TX103","TX104","TX105","email_tip"],"risk_level":"critical"
+    }
+  },
+
+  {
+    "case_id":"CASE017","difficulty":"hard","category":"fraud",
+    "expected_agent_score":1,
+    "description":"Corporate embezzlement — CFO Diana Ross approving own invoices and diverting to shell",
+    "suspect":{"name":"Diana Ross","account_id":"ACC9001","employee":true,"department":"Finance/CFO"},
+    "transactions":[
+      {"tx_id":"TX401","amount":200000,"from":"ACC9002","to":"ACC9003","note":"Vendor payment IT services","time":"2024-05-01"},
+      {"tx_id":"TX402","amount":200000,"from":"ACC9002","to":"ACC9003","note":"Vendor payment IT services","time":"2024-05-15"},
+      {"tx_id":"TX403","amount":200000,"from":"ACC9002","to":"ACC9003","note":"Vendor payment IT services","time":"2024-06-01"},
+      {"tx_id":"TX404","amount":180000,"from":"ACC9003","to":"ACC9001","note":"Director fee","time":"2024-06-02"},
+      {"tx_id":"TX405","amount":150000,"from":"ACC9001","to":"CASH","note":"Personal withdrawal","time":"2024-06-03"}
+    ],
+    "accounts":[
+      {"account_id":"ACC9001","holder":"Diana Ross Personal","account_type":"personal","balance":1200000},
+      {"account_id":"ACC9002","holder":"TechCorp Inc","account_type":"corporate","balance":5000000},
+      {"account_id":"ACC9003","holder":"DR Holdings LLC","account_type":"business","balance":1100000}
+    ],
+    "emails":[
+      {"from":"diana.ross@techcorp.com","to":"dr_personal@gmail.com","subject":"Invoice approved","body":"Approved my own vendor invoice again. Nobody checking."},
+      {"from":"dr_personal@gmail.com","to":"attorney@lawfirm.com","subject":"Asset protection","body":"Need to move funds offshore before audit next month"}
+    ],
+    "supporting_docs":[],
+    "transfer_chain":[
+      {"from":"ACC9002","to":"ACC9003","amount":200000},
+      {"from":"ACC9003","to":"ACC9001","amount":180000}
+    ],
+    "ground_truth":{
+      "suspicious_tx_ids":["TX401","TX402","TX403","TX404","TX405"],
+      "shell_accounts":["ACC9001","ACC9002","ACC9003"],
+      "source_account":"ACC9002","beneficiary_account":"ACC9001",
+      "crimes":["embezzlement","money_laundering","fraud"],
+      "verdict":"freeze_and_escalate",
+      "key_evidence":["TX401","TX402","TX403","TX404","TX405","email_tip"],"risk_level":"critical"
+    }
+  },
+
+  {
+    "case_id":"CASE018","difficulty":"hard","category":"no_fraud",
+    "expected_agent_score":0,
+    "description":"Legitimate inheritance — 3 verified docs. Agent correctly identifies clear suspect.",
+    "transactions":[
+      {"tx_id":"TX201","amount":25000,"merchant":"Wire Transfer","location":"Domestic","time":"2024-03-01","note":"Inheritance"},
+      {"tx_id":"TX202","amount":20000,"merchant":"Real Estate Agent","location":"Domestic","time":"2024-03-02","note":"House deposit"},
+      {"tx_id":"TX203","amount":5000,"merchant":"Jewelry Store","location":"Domestic","time":"2024-03-03"},
+      {"tx_id":"TX204","amount":15000,"merchant":"Wire Transfer","location":"International","time":"2024-03-04","note":"Family support"}
+    ],
+    "accounts":[{"account_id":"ACC10001","holder":"Maria Garcia","account_type":"personal","balance":75000}],
+    "emails":[],
+    "supporting_docs":[
+      {"type":"death_certificate","verified":true},
+      {"type":"will_document","verified":true},
+      {"type":"real_estate_contract","verified":true}
+    ],
+    "transfer_chain":[],
+    "ground_truth":{
+      "suspicious_tx_ids":[],"shell_accounts":[],
+      "source_account":"","beneficiary_account":"",
+      "crimes":[],"verdict":"clear_suspect",
+      "key_evidence":["supporting_docs_verified"],"risk_level":"low"
+    }
+  },
+
+  {
+    "case_id":"CASE019","difficulty":"hard","category":"gray",
+    "expected_agent_score":0.65,
+    "description":"Gray: Complex offshore trust — layering complete but might be legit estate planning. Partial evidence.",
+    "suspect":{"name":"Unknown Settlor","account_id":"ACC11001","employee":false,"department":"N/A"},
+    "transactions":[
+      {"tx_id":"TX501","amount":500000,"from":"ACC11001","to":"ACC11002","note":"Trust contribution","time":"2024-06-01"},
+      {"tx_id":"TX502","amount":480000,"from":"ACC11002","to":"ACC11003","note":"Sub-trust allocation","time":"2024-06-02"},
+      {"tx_id":"TX503","amount":460000,"from":"ACC11003","to":"ACC11004","note":"Investment mandate","time":"2024-06-03"}
+    ],
+    "accounts":[
+      {"account_id":"ACC11001","holder":"Unknown Settlor","account_type":"trust","balance":600000},
+      {"account_id":"ACC11002","holder":"Cayman Trust Alpha","account_type":"trust","balance":500000},
+      {"account_id":"ACC11003","holder":"BVI Holdings","account_type":"business","balance":480000},
+      {"account_id":"ACC11004","holder":"Final Beneficiary","account_type":"personal","balance":5000}
+    ],
+    "emails":[
+      {"from":"trust_admin@offshore.bvi","to":"client@private.com","subject":"Structure complete","body":"Beneficial owner fully obscured from regulators. Proceed."}
+    ],
+    "supporting_docs":[
+      {"type":"trust_deed","verified":false},
+      {"type":"tax_filing","verified":false}
+    ],
+    "transfer_chain":[
+      {"from":"ACC11001","to":"ACC11002","amount":500000},
+      {"from":"ACC11002","to":"ACC11003","amount":480000},
+      {"from":"ACC11003","to":"ACC11004","amount":460000}
+    ],
+    "ground_truth":{
+      "suspicious_tx_ids":["TX501","TX502","TX503"],
+      "shell_accounts":["ACC11001","ACC11002","ACC11003"],
+      "source_account":"ACC11001","beneficiary_account":"ACC11004",
+      "crimes":["tax_evasion","money_laundering"],
+      "verdict":"freeze_and_escalate",
+      "key_evidence":["TX501","TX502","TX503","email_tip"],"risk_level":"critical"
+    }
+  },
+
+  {
+    "case_id":"CASE020","difficulty":"hard","category":"gray",
+    "expected_agent_score":0.56,
+    "description":"Gray: Crypto mixing to high-risk jurisdiction. Agent partially identifies crimes — missing tax evasion.",
+    "suspect":{"name":"Unknown User","account_id":"ACC15001","employee":false,"department":"N/A"},
+    "transactions":[
+      {"tx_id":"TX901","amount":120000,"from":"ACC15001","to":"CRYPTO_MIXER","note":"Crypto conversion","time":"2024-10-01"},
+      {"tx_id":"TX902","amount":115000,"from":"CRYPTO_MIXER","to":"CRYPTO_WALLET","note":"Post-mix output","time":"2024-10-01"},
+      {"tx_id":"TX903","amount":110000,"from":"CRYPTO_WALLET","to":"ACC15002","note":"Fiat conversion","time":"2024-10-02"},
+      {"tx_id":"TX904","amount":105000,"from":"ACC15002","to":"INTL_WIRE","note":"Wire to high-risk jurisdiction","time":"2024-10-03"}
+    ],
+    "accounts":[
+      {"account_id":"ACC15001","holder":"Anonymous User","account_type":"personal","balance":500000},
+      {"account_id":"ACC15002","holder":"Unnamed LLC","account_type":"business","balance":120000}
+    ],
+    "emails":[
+      {"from":"unknown@proton.me","to":"contact@exchange.co","subject":"Withdrawal","body":"Need funds in cash in Damascus by end of week."}
+    ],
+    "supporting_docs":[
+      {"type":"kyc_document","verified":false},
+      {"type":"source_of_funds","verified":false}
+    ],
+    "transfer_chain":[
+      {"from":"ACC15001","to":"CRYPTO_MIXER","amount":120000},
+      {"from":"CRYPTO_WALLET","to":"ACC15002","amount":110000},
+      {"from":"ACC15002","to":"INTL_WIRE","amount":105000}
+    ],
+    "ground_truth":{
+      "suspicious_tx_ids":["TX901","TX902","TX903","TX904"],
+      "shell_accounts":["ACC15001","ACC15002"],
+      "source_account":"ACC15001","beneficiary_account":"INTL_WIRE",
+      "crimes":["possible_terrorism_financing","money_laundering","tax_evasion"],
+      "verdict":"freeze_and_escalate",
+      "key_evidence":["TX901","TX902","TX903","TX904","email_tip"],"risk_level":"critical"
+    }
+  },
+
+  {
+    "case_id":"CASE021","difficulty":"hard","category":"gray",
+    "expected_agent_score":0.43,
+    "description":"Gray: Ponzi collapse — operator moves funds but some docs seem legit. Agent identifies fraud partially.",
+    "suspect":{"name":"Charles Whitmore","account_id":"ACC13001","employee":true,"department":"Investment Management"},
+    "transactions":[
+      {"tx_id":"TX701","amount":1200000,"from":"INVESTOR_POOL","to":"ACC13001","note":"Fund management fee Q1","time":"2024-08-01"},
+      {"tx_id":"TX702","amount":950000,"from":"INVESTOR_POOL","to":"ACC13001","note":"Fund management fee Q2","time":"2024-08-15"},
+      {"tx_id":"TX703","amount":800000,"from":"ACC13001","to":"ACC13002","note":"Personal investment vehicle","time":"2024-08-16"},
+      {"tx_id":"TX704","amount":700000,"from":"ACC13002","to":"ACC13003","note":"Offshore allocation","time":"2024-08-17"},
+      {"tx_id":"TX705","amount":650000,"from":"ACC13003","to":"ACC13004","note":"Final destination","time":"2024-08-18"}
+    ],
+    "accounts":[
+      {"account_id":"ACC13001","holder":"Charles Whitmore","account_type":"personal","balance":4000000},
+      {"account_id":"ACC13002","holder":"Whitmore Capital LLC","account_type":"business","balance":2000000},
+      {"account_id":"ACC13003","holder":"CW Offshore Holdings","account_type":"business","balance":1500000},
+      {"account_id":"ACC13004","holder":"Anonymous BVI Account","account_type":"trust","balance":50000}
+    ],
+    "emails":[
+      {"from":"charles@whitmorewealth.com","to":"cw_private@proton.me","subject":"Exit plan","body":"Move everything to BVI by Friday. Investors will figure it out Monday."},
+      {"from":"cw_private@proton.me","to":"lawyer@offshore.bvi","subject":"Urgency","body":"Need nominee director for all three entities immediately."}
+    ],
+    "supporting_docs":[
+      {"type":"fund_prospectus","verified":false},
+      {"type":"audit_report","verified":false}
+    ],
+    "transfer_chain":[
+      {"from":"INVESTOR_POOL","to":"ACC13001","amount":1200000,"note":"Q1 fee"},
+      {"from":"ACC13001","to":"ACC13002","amount":800000},
+      {"from":"ACC13002","to":"ACC13003","amount":700000},
+      {"from":"ACC13003","to":"ACC13004","amount":650000}
+    ],
+    "ground_truth":{
+      "suspicious_tx_ids":["TX701","TX702","TX703","TX704","TX705"],
+      "shell_accounts":["ACC13001","ACC13002","ACC13003"],
+      "source_account":"ACC13001","beneficiary_account":"ACC13004",
+      "crimes":["fraud","money_laundering","embezzlement","securities_fraud"],
+      "verdict":"freeze_and_escalate",
+      "key_evidence":["TX701","TX702","TX703","TX704","TX705","email_tip"],"risk_level":"critical"
+    }
+  }
+]

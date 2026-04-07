@@ -1,0 +1,35 @@
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+*.pyc
+
+# Local env files (secrets)
+.env
+.env.*
+
+# Logs and runtime files
+*.log
+.coverage
+coverage.xml
+
+# Build / packaging
+build/
+dist/
+*.egg-info/
+wheels/
+
+# IDE/editor folders
+.idea/
+.vscode/
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# Pytest
+.pytest_cache/
+
+# Docker
+.dockerignore

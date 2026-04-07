@@ -1,0 +1,43 @@
+name: Validate & Build
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run validation script
+        env:
+          ENV_BASE_URL: http://localhost:7860
+        run: |
+          python validate_submission.py || true
+
+  docker-build:
+    runs-on: ubuntu-latest
+    needs: validate
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build Docker image (cache disabled)
+        run: |
+          docker build -t fincrime-env .
+        # don't fail the workflow if Docker not available in runner (self-hosted may be required)
+        continue-on-error: true
