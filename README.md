@@ -5,6 +5,7 @@ colorFrom: blue
 colorTo: red
 sdk: docker
 app_file: app.py
+app_port: 7860
 pinned: false
 ---
 
@@ -49,15 +50,15 @@ task3 Hard Full investigation — analyze emails, transactions, docs → deliver
 Task 1 — Spot the Fraud (Easy)
 Agent receives a list of bank transactions. Must identify suspicious ones and set overall risk level.
 
-Scoring: F1(flagged_transactions) _ 0.8 + risk_level_accuracy _ 0.2
+Scoring: F1(flagged*transactions) * 0.8 + risk*level_accuracy * 0.2
 Task 2 — Trace the Network (Medium)
 Agent receives multiple accounts with a transfer chain. Must identify shell companies, source, and final beneficiary.
 
-Scoring: shell_f1 _ 0.4 + source_correct _ 0.3 + beneficiary_correct \* 0.3
+Scoring: shell*f1 * 0.4 + source*correct * 0.3 + beneficiary_correct \* 0.3
 Task 3 — Deliver the Verdict (Hard)
 Agent receives a full case file with transactions, emails, and supporting documents. Must investigate over multiple steps then deliver a legal verdict.
 
-Scoring: verdict_correct _ 0.4 + crime_score _ 0.25 + evidence_score _ 0.25 + reasoning_score _ 0.1
+Scoring: verdict*correct * 0.4 + crime*score * 0.25 + evidence*score * 0.25 + reasoning*score * 0.1
 Action Space
 Task 1
 {
