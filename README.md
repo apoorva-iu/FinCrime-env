@@ -160,7 +160,7 @@ Rewards are **milestone-based** — partial credit at every step:
 ### Local
 
 ```bash
-git clone https://github.com/yourusername/fincrime-env
+git clone https://github.com/apoorva-iu/fincrime-env
 cd fincrime-env
 pip install uv
 uv pip install -r requirements.txt
