@@ -115,16 +115,18 @@ def list_tasks():
     ]}
 
 @app.post("/reset")
-def reset(request: ResetRequest):
-    sid = request.session_id or str(uuid.uuid4())
-    env = FinCrimeEnv(task_id=request.task_id)
+def reset(request: Optional[ResetRequest] = None):
+    # Accept empty POST bodies (validator may send no JSON). Use defaults when body is missing.
+    task_id = request.task_id if request is not None and getattr(request, 'task_id', None) else "task1"
+    sid = (request.session_id if request is not None else None) or str(uuid.uuid4())
+    env = FinCrimeEnv(task_id=task_id)
     obs = env.reset()
     sessions[sid] = env
     return {
         "session_id":     sid,
         "observation":    obs_dump(obs),
-        "task_id":        request.task_id,
-        "case_pool_size": len(TASK_POOLS[request.task_id])
+        "task_id":        task_id,
+        "case_pool_size": len(TASK_POOLS.get(task_id, []))
     }
 
 @app.post("/step")

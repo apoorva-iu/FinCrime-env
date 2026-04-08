@@ -14,7 +14,9 @@ load_dotenv()
 
 API_BASE_URL = os.environ.get("API_BASE_URL", "https://api-inference.huggingface.co/v1")
 MODEL_NAME   = os.environ.get("MODEL_NAME",   "Qwen/Qwen2.5-72B-Instruct")
-HF_TOKEN     = os.environ.get("HF_TOKEN", os.environ.get("OPENAI_API_KEY", ""))
+# Do NOT provide a default for HF_TOKEN — validator requires no fallback default.
+# Allow alternative OPENAI_API_KEY but do not set an explicit default value.
+HF_TOKEN     = os.environ.get("HF_TOKEN") or os.environ.get("OPENAI_API_KEY")
 ENV_BASE_URL = os.environ.get("ENV_BASE_URL", "http://localhost:7860")
 
 client = OpenAI(base_url=API_BASE_URL, api_key=HF_TOKEN)

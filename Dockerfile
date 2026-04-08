@@ -38,8 +38,7 @@ COPY static/ ./static/
 # Environment variables (override at runtime)
 ENV API_BASE_URL=https://api-inference.huggingface.co/v1
 ENV MODEL_NAME=Qwen/Qwen2.5-72B-Instruct
-ENV HF_TOKEN=""
-ENV OPENAI_API_KEY=""
+# Do NOT set a default HF_TOKEN or OPENAI_API_KEY in the image. Provide them at runtime / via Secrets.
 ENV ENV_BASE_URL=http://localhost:7860
 
 # Expose port
