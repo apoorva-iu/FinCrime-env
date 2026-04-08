@@ -52,10 +52,18 @@ def get_session(sid: str) -> FinCrimeEnv:
 
 @app.get("/ui")
 def ui():
-    return FileResponse(str(STATIC_DIR / "index.html"))
+    # Redirect to root where the UI is served or serve index if directly requested
+    from fastapi.responses import RedirectResponse
+    return RedirectResponse(url="/")
 
 @app.get("/")
 def root():
+    # Serve the static dashboard at root when available (for HF Spaces UI)
+    index_path = STATIC_DIR / "index.html"
+    if index_path.exists():
+        return FileResponse(str(index_path))
+
+    # Fallback to machine-readable info when UI is not present
     return {
         "name": "FinCrimeEnv",
         "version": "1.2.0",
