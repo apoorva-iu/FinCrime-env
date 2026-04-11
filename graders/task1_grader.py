@@ -8,17 +8,42 @@ import sys, json
 EPS = 1e-3
 
 
-def grade(observation: dict, action: dict) -> float:
-    # Basic heuristic: if action properly typed and contains tx_ids, give moderate score
+def load_cases():
+    import json
     try:
-        if action and isinstance(action, dict) and action.get("type") == "flag_transactions":
-            txs = action.get("tx_ids", [])
-            if len(txs) == 0:
-                return 0.2
-            return 0.6
-    except Exception:
-        pass
-    return 0.4
+        with open("../../cases.json") as f:
+            return json.load(f)
+    except:
+        return []
+
+def grade(observation: dict, action: dict) -> float:
+    import json
+    EPS = 1e-3
+    cases = load_cases()
+    case_id = observation.get("case_id", "unknown")
+    gt_case = next((c for c in cases if c.get("case_id") == case_id), None)
+    if not gt_case:
+        return 0.4
+
+    gt = gt_case.get("ground_truth", {})
+    correct = set(gt.get("suspicious_tx_ids", []))
+    flagged = set(action.get("tx_ids", []))
+
+    if action.get("type") != "flag_transactions":
+        return EPS
+
+    tp = len(correct & flagged)
+    fp = len(flagged - correct)
+    fn = len(correct - flagged)
+    precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0
+    recall = tp / (tp + fn) if (tp + fn) > 0 else 0.0
+    f1 = 2*precision*recall / (precision + recall) if (precision + recall) > 0 else 0.0
+
+    correct_risk = gt.get("risk_level", "high")
+    risk_match = 1.0 if action.get("risk_level", "").lower() == correct_risk.lower() else 0.0
+
+    score = f1 * 0.8 + risk_match * 0.2
+    return max(EPS, min(1 - EPS, score))
 
 
 if __name__ == "__main__":
