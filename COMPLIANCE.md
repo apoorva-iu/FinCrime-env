@@ -6,6 +6,7 @@ Required checks (must pass before submission)
 
 - [ ] `openenv validate openenv.yaml` — OpenEnv schema validation (install `openenv` CLI via `pip install openenv-core`).
 - [ ] `python validate_submission.py` — lightweight validator (parses `openenv.yaml`, lints Dockerfile, tries `/health`).
+- [x] `python validate_submission.py` — lightweight validator (parses `openenv.yaml`, lints Dockerfile, tries `/health`).
 - [ ] Start server and confirm `/health` and `/reset` respond with HTTP 200.
 - [ ] `python inference.py --task task1|task2|task3` — run baseline inference end-to-end; confirm structured stdout follows the `[START]...[STEP]...[END]` format and all JSON actions parse correctly.
 - [ ] `docker build -t fincrime-env .` — Docker image builds without errors.
@@ -14,6 +15,7 @@ Required checks (must pass before submission)
 Notes & remediation steps
 
 - If `openenv validate` fails: adjust `openenv.yaml` according to the validator errors. Common fixes: quote `const`/`enum` strings, ensure `observation_space` and `action_space` conform to JSON Schema.
+Phase 2 fixes applied (2026-04-11): graders added for `task1`,`task2`,`task3`; scores clamped to (0,1); `inference.py` hardened to avoid crashes; `validate_submission.py` updated to call `openenv validate` on the project dir.
 - If Docker build fails: inspect the Docker build log for missing files or permission issues. Use `.dockerignore` to keep context small.
 - If inference output is not valid JSON: open `inference.py` and run with a small sample observation; the script contains robust fallbacks to heuristics.
 
