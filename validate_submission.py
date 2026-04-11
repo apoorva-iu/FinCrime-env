@@ -53,8 +53,9 @@ except Exception as e:
 # 3b) openenv CLI validate (if installed)
 if shutil.which("openenv"):
     try:
-        print("[VALIDATE] Running 'openenv validate openenv.yaml'")
-        proc = subprocess.run(["openenv", "validate", OPENENV], check=True, capture_output=True, text=True, timeout=30)
+        print("[VALIDATE] Running 'openenv validate <project_dir>'")
+        # openenv validate expects a project directory (not the YAML file path)
+        proc = subprocess.run(["openenv", "validate", ROOT], check=True, capture_output=True, text=True, timeout=30)
         print("[VALIDATE] openenv validate output:\n", proc.stdout)
     except Exception as e:
         errors.append(f"openenv validate failed: {e}")
