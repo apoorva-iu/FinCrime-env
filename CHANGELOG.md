@@ -10,4 +10,5 @@
 - Add CI workflow (GitHub Actions) to run `python validate_submission.py` on push.
 
 ## Notes
+
 - After making these changes, run `python validate_submission.py` locally and resubmit.

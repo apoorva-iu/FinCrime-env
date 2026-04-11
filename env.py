@@ -238,7 +238,10 @@ class FinCrimeEnv:
         else:
             raw_reward, info = self._grade_task3(action)
 
-        final = round(min(max(raw_reward - penalty, 0.0), 1.0), 3)
+        # Validator requires task scores strictly between 0 and 1.
+        # Enforce exclusive bounds by clamping to (eps, 1-eps).
+        eps = 1e-3
+        final = round(min(max(raw_reward - penalty, eps), 1.0 - eps), 3)
         self.last_reward        = final
         self.cumulative_reward  = round(self.cumulative_reward + final, 3)
 

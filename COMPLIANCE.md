@@ -15,7 +15,7 @@ Required checks (must pass before submission)
 Notes & remediation steps
 
 - If `openenv validate` fails: adjust `openenv.yaml` according to the validator errors. Common fixes: quote `const`/`enum` strings, ensure `observation_space` and `action_space` conform to JSON Schema.
-Phase 2 fixes applied (2026-04-11): graders added for `task1`,`task2`,`task3`; scores clamped to (0,1); `inference.py` hardened to avoid crashes; `validate_submission.py` updated to call `openenv validate` on the project dir.
+  Phase 2 fixes applied (2026-04-11): graders added for `task1`,`task2`,`task3`; scores clamped to (0,1); `inference.py` hardened to avoid crashes; `validate_submission.py` updated to call `openenv validate` on the project dir.
 - If Docker build fails: inspect the Docker build log for missing files or permission issues. Use `.dockerignore` to keep context small.
 - If inference output is not valid JSON: open `inference.py` and run with a small sample observation; the script contains robust fallbacks to heuristics.
 
