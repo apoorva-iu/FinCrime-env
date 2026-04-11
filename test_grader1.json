@@ -1,0 +1,1 @@
+{"observation": {"case_id": "CASE001"}, "action": {"type": "flag_transactions", "tx_ids": ["TX001"], "risk_level": "high"}}
