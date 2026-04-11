@@ -20,7 +20,18 @@ HF_TOKEN     = os.getenv("HF_TOKEN")
 # Default to the deployed HF Space for validator runs; can be overridden locally via ENV_BASE_URL
 ENV_BASE_URL = os.environ.get("ENV_BASE_URL", "https://app33-fincrime-env.hf.space")
 
-client = OpenAI(base_url=API_BASE_URL, api_key=HF_TOKEN)
+def get_llm_client():
+    """Return configured OpenAI client or None if no token present.
+
+    Avoid creating the client at import time to prevent raising when no
+    API key is available in validation environments that don't provide one.
+    """
+    if not HF_TOKEN:
+        return None
+    try:
+        return OpenAI(base_url=API_BASE_URL, api_key=HF_TOKEN)
+    except Exception:
+        return None
 
 def call_env(ep, body, retries: int = 3, timeout: int = 10):
     """POST to environment endpoint with basic retry and structured error return.
@@ -51,6 +62,10 @@ def ask_llm(system, user):
     # Debug whether token is present (do NOT print token value)
     token_present = bool(HF_TOKEN)
     print(f"LLM call: model={MODEL_NAME} HF_TOKEN_set={token_present}", flush=True)
+    client = get_llm_client()
+    if not client:
+        print("LLM client not configured; skipping model call", flush=True)
+        return ""
     try:
         r = client.chat.completions.create(
             model=MODEL_NAME,
@@ -338,7 +353,27 @@ def run_episode(task_id):
 def main():
     p = argparse.ArgumentParser()
     p.add_argument("--task", default="task1", choices=["task1", "task2", "task3"])
-    run_episode(p.parse_args().task)
+    # Run episode and emit a final [END] block. Catch any unexpected exception
+    # to avoid the script exiting with a non-zero status (validator requires
+    # graceful handling of runtime errors).
+    try:
+        success, steps, score, rewards = run_episode(p.parse_args().task)
+        # Ensure final END block is always printed with stable formatting
+        print(f"[END] success={str(success).lower()} steps={steps} score={score:.3f}", flush=True)
+    except Exception as exc:
+        # Catch-all: print structured error and exit gracefully
+        print(f"[END] success=false steps=0 score=0.000 error={type(exc).__name__}:{exc}", flush=True)
+        # Do not re-raise; exit normally so validator sees a controlled exit
+        return
 
 if __name__ == "__main__":
-    main()
+    # Top-level guard to prevent any unhandled exceptions from bubbling
+    # up to the process. Any unexpected errors will be reported in a
+    # structured `[END]` line above.
+    try:
+        main()
+    except Exception as e:
+        # As an additional safety net, print the error and exit cleanly.
+        print(f"[END] success=false steps=0 score=0.000 error=UnhandledException:{e}", flush=True)
+        # Do not raise further
+        pass
