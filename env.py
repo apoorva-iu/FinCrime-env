@@ -7,6 +7,9 @@ import json, random
 from pathlib import Path
 from typing import Any, Tuple, Dict, List
 from models import Observation, StepResponse, Transaction, Account, TransferHop, Email, SupportingDoc
+from graders.task1_grader import grade as grade_task1
+from graders.task2_grader import grade as grade_task2
+from graders.task3_grader import grade as grade_task3
 
 CASES_PATH = Path(__file__).parent / "cases.json"
 
@@ -231,12 +234,16 @@ class FinCrimeEnv:
             self.repeat_count = 0
         self.last_action_type = action_type
 
+        obs_dict = self._build_observation().model_dump(by_alias=True)
         if self.task_id == "task1":
-            raw_reward, info = self._grade_task1(action)
+            raw_reward = grade_task1(obs_dict, action)
+            info = {"grader": "task1_grader", "raw_score": raw_reward}
         elif self.task_id == "task2":
-            raw_reward, info = self._grade_task2(action)
+            raw_reward = grade_task2(obs_dict, action)
+            info = {"grader": "task2_grader", "raw_score": raw_reward}
         else:
-            raw_reward, info = self._grade_task3(action)
+            raw_reward = grade_task3(obs_dict, action)
+            info = {"grader": "task3_grader", "raw_score": raw_reward}
 
         # Validator requires task scores strictly between 0 and 1.
         # Enforce exclusive bounds by clamping to (eps, 1-eps).
@@ -275,117 +282,20 @@ class FinCrimeEnv:
             }
         }
 
+    # DEPRECATED: Internal grader replaced by external graders/task1_grader.py
     def _grade_task1(self, action: dict) -> Tuple[float, dict]:
-        gt      = self.current_case["ground_truth"]
-        correct = set(gt.get("suspicious_tx_ids", []))
-        flagged = set(action.get("tx_ids", []))
+        \"\"\"Placeholder - now using external grader.\"\"\"
+        return 0.0, {\"deprecated\": \"Use graders/task1_grader.py\"}
 
-        if action.get("type") != "flag_transactions":
-            return 0.0, {
-                "error": "Wrong action type. Use: flag_transactions",
-                "hint":  '{"type":"flag_transactions","tx_ids":["TX001",...],"risk_level":"low/medium/high/critical"}'
-            }
-
-        if not correct and not flagged:
-            self.done = True
-            return 1.0, {"status": "correct_clean", "f1": 1.0,
-                         "message": "Correctly identified clean account — no fraud detected."}
-
-        if not correct and flagged:
-            fp_penalty = min(len(flagged) * 0.25, 1.0)
-            self.done  = True
-            return round(max(0.0, 1.0 - fp_penalty), 3), {
-                "status": "false_positives", "f1": 0.0,
-                "false_positives": len(flagged),
-                "message": f"Flagged {len(flagged)} transaction(s) on a clean account."
-            }
-
-        tp = len(correct & flagged)
-        fp = len(flagged - correct)
-        fn = len(correct - flagged)
-        precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0
-        recall    = tp / (tp + fn) if (tp + fn) > 0 else 0.0
-        f1        = 2*precision*recall/(precision+recall) if (precision+recall) > 0 else 0.0
-
-        correct_risk = gt.get("risk_level", "high")
-        risk_bonus   = 0.1 if action.get("risk_level", "").lower() == correct_risk else 0.0
-        reward = round(min(f1 * 0.9 + risk_bonus, 1.0), 3)
-        self.done = True
-
-        return reward, {
-            "f1": round(f1, 3), "precision": round(precision, 3), "recall": round(recall, 3),
-            "true_positives": tp, "false_positives": fp, "false_negatives": fn,
-            "risk_level_correct": risk_bonus > 0, "expected_risk": correct_risk,
-            "correct_ids": list(correct), "missed_ids": list(correct - flagged),
-            "extra_ids":   list(flagged - correct),
-            "score_breakdown": {
-                "f1_weight_0.90":   round(f1 * 0.9, 3),
-                "risk_weight_0.10": risk_bonus,
-                "total":            reward
-            },
-            "category": self.current_case.get("category", "unknown")
-        }
-
+    # DEPRECATED: Internal grader replaced by external graders/task2_grader.py
     def _grade_task2(self, action: dict) -> Tuple[float, dict]:
-        gt = self.current_case["ground_truth"]
+        \"\"\"Placeholder - now using external grader.\"\"\"
+        return 0.0, {\"deprecated\": \"Use graders/task2_grader.py\"}
 
-        if action.get("type") != "identify_network":
-            return 0.0, {
-                "error": "Wrong action type. Use: identify_network",
-                "hint":  '{"type":"identify_network","shell_accounts":["ACC001",...],"source":"ACC001","beneficiary":"ACC005"}'
-            }
-
-        correct_shells = set(gt.get("shell_accounts", []))
-        pred_shells    = set(action.get("shell_accounts", []))
-
-        if not correct_shells and not pred_shells:
-            shell_f1 = 1.0
-        elif not correct_shells and pred_shells:
-            shell_f1 = 0.0
-        elif correct_shells and not pred_shells:
-            shell_f1 = 0.0
-        else:
-            tp_s = len(correct_shells & pred_shells)
-            fp_s = len(pred_shells - correct_shells)
-            fn_s = len(correct_shells - pred_shells)
-            prec = tp_s / (tp_s + fp_s) if (tp_s + fp_s) > 0 else 0.0
-            rec  = tp_s / (tp_s + fn_s) if (tp_s + fn_s) > 0 else 0.0
-            shell_f1 = 2*prec*rec/(prec+rec) if (prec+rec) > 0 else 0.0
-
-        correct_src  = gt.get("source_account", "")
-        correct_bene = gt.get("beneficiary_account", "")
-        src_correct  = action.get("source", "") == correct_src
-        bene_correct = action.get("beneficiary", "") == correct_bene
-
-        reward = round(
-            shell_f1 * 0.4
-            + (0.3 if src_correct  else 0.0)
-            + (0.3 if bene_correct else 0.0),
-            3
-        )
-        self.done = True
-
-        return reward, {
-            "shell_f1":              round(shell_f1, 3),
-            "shells_identified":     len(correct_shells & pred_shells),
-            "shells_total":          len(correct_shells),
-            "shells_missed":         list(correct_shells - pred_shells),
-            "shells_extra":          list(pred_shells - correct_shells),
-            "correct_shells":        list(correct_shells),
-            "source_correct":        src_correct,
-            "predicted_source":      action.get("source", ""),
-            "expected_source":       correct_src,
-            "beneficiary_correct":   bene_correct,
-            "predicted_beneficiary": action.get("beneficiary", ""),
-            "expected_beneficiary":  correct_bene,
-            "score_breakdown": {
-                "shell_f1_weight_0.40":    round(shell_f1 * 0.4, 3),
-                "source_weight_0.30":      0.3 if src_correct  else 0.0,
-                "beneficiary_weight_0.30": 0.3 if bene_correct else 0.0,
-                "total":                   reward
-            },
-            "category": self.current_case.get("category", "unknown")
-        }
+    # DEPRECATED: Internal grader replaced by external graders/task3_grader.py
+    def _grade_task3(self, action: dict) -> Tuple[float, dict]:
+        \"\"\"Placeholder - now using external grader.\"\"\"
+        return 0.0, {\"deprecated\": \"Use graders/task3_grader.py\"}
 
     def _grade_task3(self, action: dict) -> Tuple[float, dict]:
         gt    = self.current_case["ground_truth"]
