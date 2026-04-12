@@ -9,9 +9,10 @@ EPS = 1e-3
 
 
 def load_cases():
-    import json
+    import json, os
     try:
-        with open("../../cases.json") as f:
+        cases_path = os.path.join(os.path.dirname(__file__), "../cases.json")
+        with open(cases_path) as f:
             return json.load(f)
     except:
         return []
