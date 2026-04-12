@@ -76,7 +76,7 @@ CASE_RECOMMENDATIONS = {
         "CRIMES IDENTIFIED: possible_terrorism_financing, money_laundering, tax_evasion\n"
         "ACTION: Freeze Anonymous User account (ACC15001) and Unnamed LLC (ACC15002) immediately. "
         "The email requesting cash delivery in Damascus by end of week is a definitive terrorism "
-        "financing indicator under 31 U.S.C. § 5318. Crypto mixer usage with wholly unverified KYC "
+
         "documents confirms deliberate identity concealment. File FinCEN SAR with the highest-urgency "
         "terrorism financing flag — do not use standard processing timelines. Report immediately to "
         "FBI Counterterrorism Division and submit to OFAC for sanctions screening of the Damascus "
