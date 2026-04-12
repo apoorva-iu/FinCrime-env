@@ -48,6 +48,8 @@ def grade(observation: dict, action: dict) -> float:
 
 
 if __name__ == "__main__":
+    import sys
+    print('{"grader": "task2"}', flush=True)
     try:
         payload = json.load(sys.stdin)
         obs = payload.get("observation", {})
