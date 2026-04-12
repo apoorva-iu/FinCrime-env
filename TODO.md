@@ -1,32 +1,28 @@
-# Validator Fix for Hackathon Submission - APPROVED PLAN
+# Validator Fix - Grader Integration [APPROVED & IN PROGRESS]
 
-**Current Status**: Plan approved. Integrating external graders into env.py.
+Current Status: Editing env.py for external graders.
 
-## Detailed Steps from Approved Plan:
+## Steps:
 
-### 1. Create/Update TODO.md [✅ COMPLETED]
+### 1. Create TODO.md [✅ DONE]
 
-- Document approved plan with progress tracking.
+### 2. Edit env.py [⏳ IN PROGRESS]
 
-### 2. Edit env.py [⏳ PENDING]
+- Replace internal \_grade_taskX with graders/taskX_grader.grade()
+- Remove deprecated methods
+- Test API calls
 
-- Import graders/task1_grader.py, task2_grader.py, task3_grader.py
-- In FinCrimeEnv.step(): replace internal \_grade_taskX() calls with grader.grade(obs.model_dump(by_alias=True), action)
-- Preserve env info dicts (add grader score to info).
-- Remove/comment internal \_grade_taskX methods.
+### 3. Test [⏳ PENDING]
 
-### 3. Test Locally [⏳ PENDING]
+- curl localhost:8000/health
+- reset/step task1-3
+- python validate_submission.py
+- python inference.py --task task1
 
-- Run `python validate_submission.py`
-- Start server: `uvicorn main:app --host 0.0.0.0 --port 7860 --reload`
-- Test /reset + /step API calls for all 3 tasks, verify grader scores (0.001-0.999).
-- Run `openenv validate .` if openenv-core installed.
+### 4. Update TODO & Resubmit [⏳ PENDING]
 
-### 4. Validation & Resubmit [⏳ PENDING]
+- Mark steps ✅
+- Commit/push to GitHub
+- Resubmit HF Space
 
-- Commit changes: `git add . && git commit -m "Integrate external graders per validator reqs"`
-- Push to GitHub: `git push`
-- Resubmit to HF Space.
-- Monitor Phase 2 deep validation.
-
-**Next Action**: Proceed with env.py edit. User: Confirm after each step.
+Next: env.py edit complete → test.

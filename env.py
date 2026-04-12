@@ -284,18 +284,18 @@ class FinCrimeEnv:
 
     # DEPRECATED: Internal grader replaced by external graders/task1_grader.py
     def _grade_task1(self, action: dict) -> Tuple[float, dict]:
-        \"\"\"Placeholder - now using external grader.\"\"\"
-        return 0.0, {\"deprecated\": \"Use graders/task1_grader.py\"}
+        """Placeholder - now using external grader."""
+        return 0.0, {"deprecated": "Use graders/task1_grader.py"}
 
     # DEPRECATED: Internal grader replaced by external graders/task2_grader.py
     def _grade_task2(self, action: dict) -> Tuple[float, dict]:
-        \"\"\"Placeholder - now using external grader.\"\"\"
-        return 0.0, {\"deprecated\": \"Use graders/task2_grader.py\"}
+        """Placeholder - now using external grader."""
+        return 0.0, {"deprecated": "Use graders/task2_grader.py"}
 
     # DEPRECATED: Internal grader replaced by external graders/task3_grader.py
     def _grade_task3(self, action: dict) -> Tuple[float, dict]:
-        \"\"\"Placeholder - now using external grader.\"\"\"
-        return 0.0, {\"deprecated\": \"Use graders/task3_grader.py\"}
+        """Placeholder - now using external grader."""
+        return 0.0, {"deprecated": "Use graders/task3_grader.py"}
 
     def _grade_task3(self, action: dict) -> Tuple[float, dict]:
         gt    = self.current_case["ground_truth"]
